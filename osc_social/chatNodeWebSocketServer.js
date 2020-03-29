@@ -9,6 +9,7 @@
 
 // Port where we'll run the websocket server
 var webSocketsServerPort = 1337;
+var fs = require('fs')
 
 
 // websocket and http servers
@@ -29,7 +30,17 @@ var position = 0;
  */
 var server = http.createServer(function (request, response) {
     // Not important for us. We're writing WebSocket server, not HTTP server
-});
+    fs.readFile(__dirname + request.url, function (err,data) {
+        if (err) {
+            response.writeHead(404);
+            response.end(JSON.stringify(err));
+          return;
+        }
+        response.writeHead(200);
+        response.end(data);
+      });
+    })
+
 server.listen(webSocketsServerPort, function () {
     console.log((new Date()) + " Server is listening on port " + webSocketsServerPort);
 });
